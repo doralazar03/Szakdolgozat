@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{{ title }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+  <style>
+    :root {
+      --bg-soft: #f3ebe4;
+      --bg-soft-2: #f8f2ed;
+      --bg-soft-3: #eee3db;
+      --bg-card: #fffaf7;
+      --nav-bg: #83706a;
+      --nav-bg-2: #74615c;
+      --accent: #a07c86;
+      --accent-dark: #8d6974;
+      --accent-soft: #ead9d8;
+      --text-main: #342b29;
+      --text-muted: #7f6f6a;
+      --border-soft: #e3d3cd;
+      --border-soft-2: #dcc9c3;
+
+      --success-soft: #e7f1e8;
+      --success-text: #476756;
+
+      --danger-soft: #f7e4e6;
+      --danger-text: #9d5a66;
+
+      --warning-soft: #f6ebde;
+      --warning-text: #9b6f39;
+
+      --info-soft: #ede6eb;
+      --info-text: #6f5966;
+
+      --shadow-soft: 0 14px 36px rgba(111, 91, 87, 0.10);
+      --shadow-hover: 0 18px 42px rgba(111, 91, 87, 0.14);
+      --shadow-nav: 0 12px 28px rgba(95, 74, 69, 0.13);
+
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 14px;
+      --radius-pill: 999px;
+    }
+
+    html, body {
+      min-height: 100%;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,.72), transparent 30%),
+        radial-gradient(circle at right top, rgba(244,225,221,.45), transparent 26%),
+        linear-gradient(180deg, var(--bg-soft-2) 0%, var(--bg-soft) 56%, var(--bg-soft-3) 100%);
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    code,
+    pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    .navbar-lux {
+      background: linear-gradient(135deg, var(--nav-bg) 0%, var(--nav-bg-2) 100%);
+      box-shadow: var(--shadow-nav);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .navbar .container {
+      padding-top: .7rem;
+      padding-bottom: .7rem;
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      letter-spacing: .2px;
+      color: #fffaf7 !important;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .navbar-brand i {
+      font-size: 1rem;
+      opacity: .95;
+    }
+
+    .navbar-title {
+      color: rgba(255,250,247,.78) !important;
+      font-weight: 500;
+      letter-spacing: .01em;
+    }
+
+    .page-wrap {
+      padding-top: 2.35rem;
+      padding-bottom: 3.25rem;
+    }
+
+    .card {
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      background: linear-gradient(180deg, #fffaf7 0%, #f9f1eb 100%);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-hover);
+      border-color: var(--border-soft-2);
+      transform: translateY(-2px);
+    }
+
+    .card-body {
+      padding: 1.65rem;
+    }
+
+    .card-title {
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: .55rem;
+      display: flex;
+      align-items: center;
+      gap: .55rem;
+    }
+
+    .card-title i {
+      color: var(--accent);
+      font-size: 1rem;
+      opacity: .95;
+    }
+
+    .info-box {
+      border: 1px solid var(--border-soft);
+      border-radius: 18px;
+      padding: 1rem 1.05rem;
+      background: linear-gradient(180deg, #fcf5f0 0%, #f8eee8 100%);
+      height: 100%;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.6);
+    }
+
+    .text-muted,
+    .form-text,
+    small,
+    summary {
+      color: var(--text-muted) !important;
+    }
+
+    .soft-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      border-radius: var(--radius-pill);
+      padding: .42rem .76rem;
+      font-size: .79rem;
+      font-weight: 700;
+      letter-spacing: .2px;
+    }
+
+    .soft-badge-neutral {
+      background: var(--info-soft);
+      color: var(--info-text);
+    }
+
+    .soft-badge-dark {
+      background: #e8ddd7;
+      color: #5f4f4a;
+    }
+
+    #hashText {
+      color: var(--danger-text) !important;
+      background: rgba(157, 90, 102, .08);
+      border: 1px solid rgba(157, 90, 102, .12);
+      padding: .32rem .55rem;
+      border-radius: 10px;
+      word-break: break-all;
+    }
+
+    .btn {
+      border-radius: 14px;
+      font-weight: 600;
+      padding: .7rem 1rem;
+      transition: .18s ease;
+      box-shadow: none;
+    }
+
+    .btn-sm {
+      border-radius: 12px;
+      padding: .43rem .8rem;
+      font-weight: 600;
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg, #ab8791 0%, var(--accent) 100%);
+      border-color: var(--accent);
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(160, 124, 134, .16);
+    }
+
+    .btn-primary:hover,
+    .btn-primary:focus {
+      background: linear-gradient(180deg, #9a7680 0%, var(--accent-dark) 100%);
+      border-color: var(--accent-dark);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    .btn-outline-secondary {
+      border-color: #d9cbc6;
+      color: var(--text-main);
+      background: #fffdfa;
+    }
+
+    .btn-outline-secondary:hover,
+    .btn-outline-secondary:focus {
+      background: #f3ece8;
+      border-color: #d9cbc6;
+      color: var(--text-main);
+    }
+
+    .alert {
+      border: 0;
+      border-radius: 16px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.35);
+    }
+
+    .alert-success {
+      background: #edf7ef;
+      color: var(--success-text);
+    }
+
+    .alert-danger {
+      background: #fcecef;
+      color: var(--danger-text);
+    }
+
+    details summary {
+      cursor: pointer;
+    }
+
+    .raw-json {
+      background: #3f3432;
+      color: #fff7f5;
+      border-radius: 16px;
+      overflow: auto;
+      max-height: 280px;
+    }
+
+    @media (max-width: 991.98px) {
+      .page-wrap {
+        padding-top: 1.6rem;
+      }
+
+      .card-body {
+        padding: 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark navbar-lux">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <i class="bi bi-shield-check me-2"></i>
+      Document Verifier
+    </a>
+    <span class="navbar-text navbar-title">{{ title }}</span>
+  </div>
+</nav>
+
+<div class="container page-wrap">
+
+  {% if ok %}
+    <div class="alert alert-success d-flex align-items-center mb-4">
+      <div class="me-2" style="font-size:1.3rem;">✅</div>
+      <div>A verzió sikeresen rögzítésre került: <strong>{{ docId }}</strong> v<strong>{{ version }}</strong></div>
+    </div>
+  {% else %}
+    <div class="alert alert-danger d-flex align-items-center mb-4">
+      <div class="me-2" style="font-size:1.3rem;">❌</div>
+      <div>Nem sikerült rögzíteni ezt a verziót.</div>
+    </div>
+  {% endif %}
+
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title mb-3">
+        <i class="bi bi-check2-circle"></i>
+        Verzió részletei
+      </h5>
+
+      <div class="mb-2 d-flex align-items-center flex-wrap gap-2">
+        <span class="soft-badge soft-badge-dark">Dokumentumazonosító</span>
+        <code>{{ docId }}</code>
+      </div>
+
+      <div class="mb-3 d-flex align-items-center flex-wrap gap-2">
+        <span class="soft-badge soft-badge-neutral">Verzió</span>
+        <code>{{ version }}</code>
+      </div>
+
+      {% if hash %}
+        <div class="mb-3 d-flex align-items-center flex-wrap gap-2">
+          <span class="soft-badge soft-badge-neutral">Content Hash (SHA-256)</span>
+          <code id="hashText">{{ hash }}</code>
+          <button class="btn btn-sm btn-outline-secondary" type="button" onclick="copyHash()">Másolás</button>
+        </div>
+      {% endif %}
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="info-box">
+            <div class="text-muted small">Tulajdonos</div>
+            <div class="fw-semibold">{{ result.owner if result and result.owner is defined else "—" }}</div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="info-box">
+            <div class="text-muted small">Előző hash</div>
+            <div class="fw-semibold" style="word-break: break-all;">
+              {{ result.previousHash if result and result.previousHash is defined else "—" }}
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="info-box">
+            <div class="text-muted small">Létrehozás ideje</div>
+            <div class="fw-semibold" id="createdAtText">
+              {{ result.createdAt if result and result.createdAt is defined else "" }}
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="info-box">
+            <div class="text-muted small">Tranzakcióazonosító</div>
+            <div class="fw-semibold" style="word-break: break-all;">
+              {{ result.txId if result and result.txId is defined else "—" }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <details class="mt-3">
+        <summary class="text-muted">Részletes adatok</summary>
+        <pre class="raw-json p-3 mt-2">{{ result | tojson(indent=2) }}</pre>
+      </details>
+
+    </div>
+  </div>
+
+  <div class="d-flex gap-2 mt-3 flex-wrap">
+    <a class="btn btn-outline-secondary" href="/">Vissza</a>
+    <a class="btn btn-primary" href="/timeline/{{ docId }}">Verziótörténet</a>
+  </div>
+
+</div>
+
+<script>
+function formatTime(iso) {
+  if (!iso) return "—";
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return iso;
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())} (local)`;
+}
+(function(){
+  const el = document.getElementById('createdAtText');
+  if (el && el.textContent.trim()) el.textContent = formatTime(el.textContent.trim());
+  else if (el) el.textContent = "—";
+})();
+async function copyHash() {
+  const h = document.getElementById('hashText')?.textContent?.trim();
+  if (!h) return;
+  await navigator.clipboard.writeText(h);
+}
+</script>
+
+</body>
+</html>

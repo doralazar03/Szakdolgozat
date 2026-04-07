@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin – Hálózati állapot</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+  <style>
+    :root {
+      --bg-soft: #f3ebe4;
+      --bg-soft-2: #f8f2ed;
+      --bg-soft-3: #eee3db;
+      --bg-card: #fffaf7;
+      --nav-bg: #83706a;
+      --nav-bg-2: #74615c;
+      --accent: #a07c86;
+      --accent-dark: #8d6974;
+      --accent-soft: #ead9d8;
+      --text-main: #342b29;
+      --text-muted: #7f6f6a;
+      --border-soft: #e3d3cd;
+      --border-soft-2: #dcc9c3;
+
+      --success-soft: #e7f1e8;
+      --success-text: #476756;
+
+      --danger-soft: #f7e4e6;
+      --danger-text: #9d5a66;
+
+      --warning-soft: #f6ebde;
+      --warning-text: #9b6f39;
+
+      --info-soft: #ede6eb;
+      --info-text: #6f5966;
+
+      --neutral-soft: #eee7e3;
+      --neutral-text: #5f5653;
+
+      --shadow-soft: 0 14px 36px rgba(111, 91, 87, 0.10);
+      --shadow-hover: 0 18px 42px rgba(111, 91, 87, 0.14);
+      --shadow-nav: 0 12px 28px rgba(95, 74, 69, 0.13);
+
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 14px;
+      --radius-pill: 999px;
+    }
+
+    html, body {
+      min-height: 100%;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,.72), transparent 30%),
+        radial-gradient(circle at right top, rgba(244,225,221,.45), transparent 26%),
+        linear-gradient(180deg, var(--bg-soft-2) 0%, var(--bg-soft) 56%, var(--bg-soft-3) 100%);
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        "Liberation Mono", "Courier New", monospace;
+    }
+
+    .kv td:first-child {
+      width: 180px;
+    }
+
+    .truncate {
+      max-width: 520px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .navbar-custom {
+      background: linear-gradient(135deg, var(--nav-bg) 0%, var(--nav-bg-2) 100%);
+      box-shadow: var(--shadow-nav);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .navbar .container {
+      padding-top: .7rem;
+      padding-bottom: .7rem;
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      letter-spacing: .2px;
+      color: #fffaf7 !important;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .navbar-brand i {
+      font-size: 1rem;
+      opacity: .95;
+    }
+
+    .nav-action-btn {
+      border-radius: var(--radius-pill);
+      padding: .5rem 1rem;
+      font-weight: 500;
+      border-width: 1px;
+      transition: .18s ease;
+      backdrop-filter: blur(4px);
+    }
+
+    .nav-action-btn i {
+      font-size: .93rem;
+      opacity: .92;
+    }
+
+    .btn-outline-light.nav-action-btn {
+      border-color: rgba(255,255,255,.30);
+      color: #fffaf7;
+      background: rgba(255,255,255,.06);
+    }
+
+    .btn-outline-light.nav-action-btn:hover,
+    .btn-outline-light.nav-action-btn:focus {
+      background: rgba(255,255,255,.15);
+      border-color: rgba(255,255,255,.42);
+      color: #fffaf7;
+      transform: translateY(-1px);
+    }
+
+    .btn-outline-danger.nav-action-btn {
+      border-color: rgba(244, 204, 212, .42);
+      color: #fff4f6;
+      background: rgba(167, 84, 98, .10);
+    }
+
+    .btn-outline-danger.nav-action-btn:hover,
+    .btn-outline-danger.nav-action-btn:focus {
+      background: rgba(167, 84, 98, .18);
+      border-color: rgba(244, 204, 212, .64);
+      color: #fff8f8;
+      transform: translateY(-1px);
+    }
+
+    .page-wrap {
+      padding-top: 2.35rem;
+      padding-bottom: 3.25rem;
+    }
+
+    .page-title {
+      font-weight: 700;
+      letter-spacing: -.015em;
+      color: var(--text-main);
+    }
+
+    .page-subtitle {
+      color: var(--text-muted);
+      margin-top: .45rem;
+      line-height: 1.65;
+      max-width: 760px;
+    }
+
+    .card {
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+      background: linear-gradient(180deg, #fffaf7 0%, #f9f1eb 100%);
+      overflow: hidden;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-hover);
+      border-color: var(--border-soft-2);
+      transform: translateY(-2px);
+    }
+
+    .card-body {
+      padding: 1.65rem;
+    }
+
+    .card-title {
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: .55rem;
+    }
+
+    .card-title i {
+      color: var(--accent);
+      font-size: 1rem;
+      opacity: .95;
+    }
+
+    .table {
+      --bs-table-bg: transparent;
+      margin-bottom: 0;
+    }
+
+    .table td,
+    .table th {
+      border-color: var(--border-soft);
+      vertical-align: middle;
+    }
+
+    .table-sm td,
+    .table-sm th {
+      padding-top: .55rem;
+      padding-bottom: .55rem;
+    }
+
+    .btn {
+      border-radius: 14px;
+      font-weight: 600;
+      transition: .18s ease;
+      box-shadow: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg, #ab8791 0%, var(--accent) 100%);
+      border-color: var(--accent);
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(160, 124, 134, .16);
+    }
+
+    .btn-primary:hover,
+    .btn-primary:focus {
+      background: linear-gradient(180deg, #9a7680 0%, var(--accent-dark) 100%);
+      border-color: var(--accent-dark);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    .btn-outline-secondary {
+      border-color: #d9cbc6;
+      color: var(--text-main);
+      background: #fffdfa;
+    }
+
+    .btn-outline-secondary:hover,
+    .btn-outline-secondary:focus {
+      background-color: #f3ece8;
+      border-color: #d9cbc6;
+      color: var(--text-main);
+    }
+
+    .btn-outline-info {
+      color: var(--info-text);
+      border-color: #cfbcc5;
+      background: #fffdfa;
+    }
+
+    .btn-outline-info:hover,
+    .btn-outline-info:focus {
+      background: var(--info-soft);
+      border-color: #cfbcc5;
+      color: var(--info-text);
+    }
+
+    .soft-badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: .38rem .72rem;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .2px;
+    }
+
+    .badge-success-soft {
+      background: var(--success-soft);
+      color: var(--success-text);
+    }
+
+    .badge-danger-soft {
+      background: var(--danger-soft);
+      color: var(--danger-text);
+    }
+
+    .badge-neutral-soft {
+      background: var(--neutral-soft);
+      color: var(--neutral-text);
+    }
+
+    .alert {
+      border: 0;
+      border-radius: 16px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.35);
+    }
+
+    .alert-danger {
+      background: #fcecef;
+      color: var(--danger-text);
+    }
+
+    .raw-box {
+      background: #3f3432;
+      color: #fff7f5;
+      border-radius: 16px;
+      max-height: 420px;
+      overflow: auto;
+    }
+
+    @media (max-width: 991.98px) {
+      .page-wrap {
+        padding-top: 1.6rem;
+      }
+
+      .card-body {
+        padding: 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <i class="bi bi-shield-check me-2"></i>
+      Document Verifier
+    </a>
+
+    <div class="ms-auto d-flex align-items-center gap-2 flex-wrap">
+      <a class="btn btn-outline-light btn-sm nav-action-btn" href="/dashboard">
+        <i class="bi bi-grid-1x2 me-1"></i>
+        Áttekintés
+      </a>
+      <a class="btn btn-outline-info btn-sm" href="/admin/users">
+        <i class="bi bi-people me-1"></i>
+        Felhasználók
+      </a>
+
+      <form method="post" action="/auth/logout" class="m-0">
+        <button class="btn btn-outline-danger btn-sm nav-action-btn" type="submit">
+          <i class="bi bi-box-arrow-right me-1"></i>
+          Kijelentkezés
+        </button>
+      </form>
+    </div>
+  </div>
+</nav>
+
+<div class="container page-wrap">
+
+  <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+    <div>
+      <h1 class="page-title h2 m-0">Hálózati állapot</h1>
+      <div class="page-subtitle">Adminisztrátori áttekintés a gateway-ről, a Fabric komponensekről és a ledger gyors állapotáról.</div>
+    </div>
+
+    <div class="d-flex gap-2 flex-wrap">
+      <button class="btn btn-outline-secondary" type="button" onclick="toggleAutoRefresh()" id="autoBtn">Auto: ON</button>
+      <button class="btn btn-primary" type="button" onclick="loadStatus()">Frissítés</button>
+      <a class="btn btn-outline-secondary" href="/dashboard">Vissza</a>
+    </div>
+  </div>
+
+  <div id="topAlert"></div>
+
+  <div class="row g-3">
+
+    <div class="col-lg-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="card-title m-0">
+              <i class="bi bi-hdd-network"></i>
+              Node gateway
+            </h5>
+            <span id="badgeNode" class="soft-badge badge-neutral-soft">—</span>
+          </div>
+          <table class="table table-sm mt-3 mb-0 kv">
+            <tbody>
+              <tr><td class="text-muted">Build</td><td class="mono" id="nodeBuild">—</td></tr>
+              <tr><td class="text-muted">Channel</td><td class="mono" id="nodeChannel">—</td></tr>
+              <tr><td class="text-muted">Chaincode</td><td class="mono" id="nodeChaincode">—</td></tr>
+              <tr><td class="text-muted">MSP</td><td class="mono" id="nodeMsp">—</td></tr>
+              <tr><td class="text-muted">Peer</td><td class="mono truncate" id="nodePeer">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="card-title m-0">
+              <i class="bi bi-diagram-3"></i>
+              Fabric komponensek
+            </h5>
+            <span id="badgeFabric" class="soft-badge badge-neutral-soft">—</span>
+          </div>
+          <table class="table table-sm mt-3 mb-0 kv">
+            <tbody>
+              <tr><td class="text-muted">CA</td><td class="mono" id="stCa">—</td></tr>
+              <tr><td class="text-muted">Peer</td><td class="mono" id="stPeer">—</td></tr>
+              <tr><td class="text-muted">Gateway auth</td><td class="mono" id="stAuth">—</td></tr>
+              <tr><td class="text-muted">Utolsó ellenőrzés</td><td class="mono" id="lastCheck">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="card-title m-0">
+              <i class="bi bi-bar-chart-line"></i>
+              Ledger gyors statisztika
+            </h5>
+            <span id="badgeLedger" class="soft-badge badge-neutral-soft">—</span>
+          </div>
+          <table class="table table-sm mt-3 mb-0 kv">
+            <tbody>
+              <tr><td class="text-muted">Dokumentumazonosítók</td><td class="mono" id="stDocs">—</td></tr>
+              <tr><td class="text-muted">Összes verzió</td><td class="mono" id="stVersions">—</td></tr>
+              <tr><td class="text-muted">Visszavont</td><td class="mono" id="stRevoked">—</td></tr>
+              <tr><td class="text-muted">Legutóbbi létrehozás</td><td class="mono" id="stLatest">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <h5 class="card-title m-0">
+              <i class="bi bi-braces"></i>
+              Részletes JSON
+            </h5>
+            <button class="btn btn-outline-secondary btn-sm" type="button" onclick="copyRaw()">Másolás</button>
+          </div>
+          <pre id="raw" class="raw-box p-3 mt-3 mb-0">Loading...</pre>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function pad(n) {
+  return String(n).padStart(2, '0');
+}
+
+function fmtLocal(dt) {
+  try {
+    const d = new Date(dt);
+    if (isNaN(d.getTime())) return String(dt || "—");
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  } catch {
+    return String(dt || "—");
+  }
+}
+
+function setBadge(el, ok) {
+  if (!el) return;
+  el.className = "soft-badge " + (ok ? "badge-success-soft" : "badge-danger-soft");
+  el.textContent = ok ? "OK" : "FAIL";
+}
+
+function showAlert(type, msg) {
+  const top = document.getElementById("topAlert");
+  top.innerHTML = msg ? `<div class="alert alert-${type}">${msg}</div>` : "";
+}
+
+function setText(id, v) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.textContent = (v === undefined || v === null || v === "") ? "—" : String(v);
+  }
+}
+
+function normalizeStatus(v) {
+  const s = String(v || "").trim().toLowerCase();
+  if (!s) return "—";
+  if (s === "up") return "UP";
+  if (s === "down") return "DOWN";
+  if (s === "configured") return "CONFIGURED";
+  if (s === "missing") return "MISSING";
+  if (s === "missing_identity") return "MISSING_IDENTITY";
+  if (s === "jwt_ok") return "JWT_OK";
+  if (s === "jwt_missing") return "JWT_MISSING";
+  if (s === "unknown") return "UNKNOWN";
+  return String(v);
+}
+
+async function loadStatus() {
+  showAlert("", "");
+
+  try {
+    const r = await fetch("/api/admin/network");
+    const txt = await r.text();
+
+    let data;
+    try {
+      data = JSON.parse(txt);
+    } catch {
+      data = { raw: txt };
+    }
+
+    document.getElementById("raw").textContent = JSON.stringify(data, null, 2);
+
+    if (!r.ok) {
+      setBadge(document.getElementById("badgeNode"), false);
+      setBadge(document.getElementById("badgeFabric"), false);
+      setBadge(document.getElementById("badgeLedger"), false);
+      showAlert("danger", data.error || "Nem sikerült lekérni a hálózati státuszt.");
+      return;
+    }
+
+    const node = data.node || {};
+    const fabric = data.fabric || {};
+    const ledger = data.ledger || {};
+
+    setBadge(document.getElementById("badgeNode"), !!node.ok);
+    setBadge(document.getElementById("badgeFabric"), !!fabric.ok);
+    setBadge(document.getElementById("badgeLedger"), !!ledger.ok);
+
+    setText("nodeBuild", node.build);
+    setText("nodeChannel", node.channel);
+    setText("nodeChaincode", node.chaincode);
+    setText("nodeMsp", node.mspId);
+    setText("nodePeer", node.peer);
+
+    setText("stCa", normalizeStatus(fabric.caStatus));
+    setText("stPeer", normalizeStatus(fabric.peerStatus));
+    setText("stAuth", normalizeStatus(fabric.authStatus));
+    setText("lastCheck", fmtLocal(data.checkedAt || new Date().toISOString()));
+
+    setText("stDocs", ledger.totalDocumentIds);
+    setText("stVersions", ledger.totalVersions);
+    setText("stRevoked", ledger.revokedCount);
+    setText("stLatest", ledger.latestCreatedAt);
+  } catch (e) {
+    document.getElementById("raw").textContent = String(e);
+    setBadge(document.getElementById("badgeNode"), false);
+    setBadge(document.getElementById("badgeFabric"), false);
+    setBadge(document.getElementById("badgeLedger"), false);
+    showAlert("danger", "Hálózati hiba / szerver nem elérhető.");
+  }
+}
+
+async function copyRaw() {
+  const t = document.getElementById("raw").textContent || "";
+  try {
+    await navigator.clipboard.writeText(t);
+  } catch {}
+}
+
+let auto = true;
+let timer = null;
+
+function toggleAutoRefresh() {
+  auto = !auto;
+  const b = document.getElementById("autoBtn");
+  b.textContent = auto ? "Auto: ON" : "Auto: OFF";
+
+  if (timer) {
+    clearInterval(timer);
+    timer = null;
+  }
+
+  if (auto) {
+    timer = setInterval(loadStatus, 5000);
+  }
+}
+
+loadStatus();
+timer = setInterval(loadStatus, 5000);
+</script>
+
+</body>

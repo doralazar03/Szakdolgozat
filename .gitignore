@@ -1,0 +1,12 @@
+venv/
+node_modules/
+__pycache__/
+.env
+organizations/
+*.log
+*.pem
+*.crt
+*.key
+fabric/wallet/
+/fabric/
+gateway-api-node/fabric/users/

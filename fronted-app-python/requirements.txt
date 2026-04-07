@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+python-multipart
+jinja2
+requests
+reportlab 
+qrcode[pil]
+PyJWT==2.10.1

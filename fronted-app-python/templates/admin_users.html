@@ -1,0 +1,881 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin – Felhasználók</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+  <style>
+    :root {
+      --bg-soft: #f3ebe4;
+      --bg-soft-2: #f8f2ed;
+      --bg-soft-3: #eee3db;
+      --bg-card: #fffaf7;
+      --nav-bg: #83706a;
+      --nav-bg-2: #74615c;
+      --accent: #a07c86;
+      --accent-dark: #8d6974;
+      --accent-soft: #ead9d8;
+      --text-main: #342b29;
+      --text-muted: #7f6f6a;
+      --border-soft: #e3d3cd;
+      --border-soft-2: #dcc9c3;
+
+      --success-soft: #e7f1e8;
+      --success-text: #476756;
+
+      --danger-soft: #f7e4e6;
+      --danger-text: #9d5a66;
+
+      --warning-soft: #f6ebde;
+      --warning-text: #9b6f39;
+
+      --info-soft: #ede6eb;
+      --info-text: #6f5966;
+
+      --neutral-soft: #eee7e3;
+      --neutral-text: #5f5653;
+
+      --shadow-soft: 0 14px 36px rgba(111, 91, 87, 0.10);
+      --shadow-hover: 0 18px 42px rgba(111, 91, 87, 0.14);
+      --shadow-nav: 0 12px 28px rgba(95, 74, 69, 0.13);
+
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 14px;
+      --radius-pill: 999px;
+    }
+
+    html, body {
+      min-height: 100%;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,.72), transparent 30%),
+        radial-gradient(circle at right top, rgba(244,225,221,.45), transparent 26%),
+        linear-gradient(180deg, var(--bg-soft-2) 0%, var(--bg-soft) 56%, var(--bg-soft-3) 100%);
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        "Liberation Mono", "Courier New", monospace;
+    }
+
+    .truncate {
+      max-width: 220px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .navbar-custom {
+      background: linear-gradient(135deg, var(--nav-bg) 0%, var(--nav-bg-2) 100%);
+      box-shadow: var(--shadow-nav);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .navbar .container {
+      padding-top: .7rem;
+      padding-bottom: .7rem;
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      letter-spacing: .2px;
+      color: #fffaf7 !important;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .navbar-brand i {
+      font-size: 1rem;
+      opacity: .95;
+    }
+
+    .nav-action-btn {
+      border-radius: var(--radius-pill);
+      padding: .5rem 1rem;
+      font-weight: 500;
+      border-width: 1px;
+      transition: .18s ease;
+      backdrop-filter: blur(4px);
+    }
+
+    .nav-action-btn i {
+      font-size: .93rem;
+      opacity: .92;
+    }
+
+    .btn-outline-light.nav-action-btn {
+      border-color: rgba(255,255,255,.30);
+      color: #fffaf7;
+      background: rgba(255,255,255,.06);
+    }
+
+    .btn-outline-light.nav-action-btn:hover,
+    .btn-outline-light.nav-action-btn:focus {
+      background: rgba(255,255,255,.15);
+      border-color: rgba(255,255,255,.42);
+      color: #fffaf7;
+      transform: translateY(-1px);
+    }
+
+    .btn-outline-danger.nav-action-btn {
+      border-color: rgba(244, 204, 212, .42);
+      color: #fff4f6;
+      background: rgba(167, 84, 98, .10);
+    }
+
+    .btn-outline-danger.nav-action-btn:hover,
+    .btn-outline-danger.nav-action-btn:focus {
+      background: rgba(167, 84, 98, .18);
+      border-color: rgba(244, 204, 212, .64);
+      color: #fff8f8;
+      transform: translateY(-1px);
+    }
+
+    .page-wrap {
+      padding-top: 2.35rem;
+      padding-bottom: 3.25rem;
+    }
+
+    .page-title {
+      font-weight: 700;
+      letter-spacing: -.015em;
+      color: var(--text-main);
+    }
+
+    .page-subtitle {
+      color: var(--text-muted);
+      margin-top: .45rem;
+      line-height: 1.65;
+      max-width: 760px;
+    }
+
+    .top-tools {
+      gap: .75rem;
+    }
+
+    .section-label {
+      font-size: .92rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .create-panel-note {
+      color: var(--text-muted);
+      font-size: .93rem;
+      line-height: 1.6;
+      margin-top: -.1rem;
+      margin-bottom: 1.15rem;
+    }
+
+    .card {
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+      background: linear-gradient(180deg, #fffaf7 0%, #f9f1eb 100%);
+      overflow: hidden;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-hover);
+      border-color: var(--border-soft-2);
+      transform: translateY(-2px);
+    }
+
+    .panel-soft {
+      background: linear-gradient(180deg, #fffaf7 0%, #f7eee8 100%);
+    }
+
+    .card-body {
+      padding: 1.65rem;
+    }
+
+    .card-title {
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: .55rem;
+    }
+
+    .card-title i {
+      color: var(--accent);
+      font-size: 1rem;
+      opacity: .95;
+    }
+
+    .form-label {
+      color: var(--text-main);
+      font-weight: 600;
+      margin-bottom: .48rem;
+      font-size: .95rem;
+    }
+
+    .form-control,
+    .form-select {
+      border-radius: var(--radius-sm);
+      border-color: #e6dad5;
+      min-height: 48px;
+      background-color: #fffdfa;
+      color: var(--text-main);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.75);
+    }
+
+    .form-control::placeholder {
+      color: #ab9993;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: #c9a8af;
+      box-shadow: 0 0 0 .25rem rgba(160, 124, 134, .14);
+      background-color: #fffdfb;
+    }
+
+    .users-search {
+      min-width: 240px;
+    }
+
+    .btn {
+      border-radius: 14px;
+      font-weight: 600;
+      transition: .18s ease;
+      box-shadow: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg, #ab8791 0%, var(--accent) 100%);
+      border-color: var(--accent);
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(160, 124, 134, .16);
+    }
+
+    .btn-primary:hover,
+    .btn-primary:focus {
+      background: linear-gradient(180deg, #9a7680 0%, var(--accent-dark) 100%);
+      border-color: var(--accent-dark);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    .btn-outline-secondary {
+      border-color: #d9cbc6;
+      color: var(--text-main);
+      background: #fffdfa;
+    }
+
+    .btn-outline-secondary:hover,
+    .btn-outline-secondary:focus {
+      background-color: #f3ece8;
+      border-color: #d9cbc6;
+      color: var(--text-main);
+    }
+
+    .btn-outline-warning {
+      color: var(--warning-text);
+      border-color: #dfc295;
+      background: #fffdfa;
+    }
+
+    .btn-outline-warning:hover,
+    .btn-outline-warning:focus {
+      background: var(--warning-soft);
+      border-color: #dfc295;
+      color: var(--warning-text);
+    }
+
+    .btn-outline-danger {
+      color: var(--danger-text);
+      border-color: #e3b7bf;
+      background: #fffdfa;
+    }
+
+    .btn-outline-danger:hover,
+    .btn-outline-danger:focus {
+      background: var(--danger-soft);
+      border-color: #e3b7bf;
+      color: var(--danger-text);
+    }
+
+    .btn-outline-success {
+      color: var(--success-text);
+      border-color: #a8d1b6;
+      background: #fffdfa;
+    }
+
+    .btn-outline-success:hover,
+    .btn-outline-success:focus {
+      background: var(--success-soft);
+      border-color: #a8d1b6;
+      color: var(--success-text);
+    }
+
+    .btn-outline-primary {
+      color: var(--info-text);
+      border-color: #cfbcc5;
+      background: #fffdfa;
+    }
+
+    .btn-outline-primary:hover,
+    .btn-outline-primary:focus {
+      background: var(--info-soft);
+      border-color: #cfbcc5;
+      color: var(--info-text);
+    }
+
+    .table {
+      --bs-table-bg: transparent;
+      --bs-table-striped-bg: transparent;
+      margin-bottom: 0;
+    }
+
+    .table thead th {
+      color: var(--text-main);
+      font-weight: 700;
+      border-bottom-width: 1px;
+      border-color: var(--border-soft);
+      white-space: nowrap;
+      background: rgba(255,255,255,.22);
+      font-size: .93rem;
+    }
+
+    .table tbody td {
+      border-color: #eee2dc;
+      vertical-align: middle;
+    }
+
+    .table tbody tr {
+      transition: background-color .16s ease;
+    }
+
+    .table tbody tr:hover {
+      background: rgba(255,255,255,.36);
+    }
+
+    .soft-badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: .38rem .72rem;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .2px;
+    }
+
+    .badge-active {
+      background: var(--success-soft);
+      color: var(--success-text);
+    }
+
+    .badge-disabled {
+      background: var(--danger-soft);
+      color: var(--danger-text);
+    }
+
+    .badge-neutral {
+      background: var(--neutral-soft);
+      color: var(--neutral-text);
+    }
+
+    .badge-fabric-ok {
+      background: var(--info-soft);
+      color: var(--info-text);
+    }
+
+    .badge-fabric-missing {
+      background: var(--warning-soft);
+      color: var(--warning-text);
+    }
+
+    .modal-content {
+      border: 1px solid var(--border-soft);
+      border-radius: 24px;
+      box-shadow: 0 22px 52px rgba(95, 77, 73, 0.18);
+      background: linear-gradient(180deg, #fffaf7 0%, #f8eee8 100%);
+    }
+
+    .modal-header,
+    .modal-footer {
+      border-color: #eee3de;
+      background: linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,0));
+    }
+
+    .modal-title {
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .btn-close {
+      opacity: .65;
+    }
+
+    .btn-close:hover {
+      opacity: 1;
+    }
+
+    .alert {
+      border: 0;
+      border-radius: 16px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.35);
+    }
+
+    .alert-success {
+      background: #edf7ef;
+      color: var(--success-text);
+    }
+
+    .alert-danger {
+      background: #fcecef;
+      color: var(--danger-text);
+    }
+
+    .empty-state {
+      padding: 22px 10px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    @media (max-width: 991.98px) {
+      .users-search {
+        min-width: 100%;
+      }
+
+      .page-wrap {
+        padding-top: 1.6rem;
+      }
+
+      .card-body {
+        padding: 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <i class="bi bi-shield-check me-2"></i>
+      Document Verifier
+    </a>
+
+    <div class="ms-auto d-flex align-items-center gap-2 flex-wrap">
+      <a class="btn btn-outline-light btn-sm nav-action-btn" href="/dashboard">
+        <i class="bi bi-grid-1x2 me-1"></i>
+        Áttekintés
+      </a>
+      <a class="btn btn-outline-light btn-sm nav-action-btn" href="/admin/network">
+        <i class="bi bi-diagram-3 me-1"></i>
+        Hálózati állapot
+      </a>
+      <form method="post" action="/auth/logout" class="m-0">
+        <button class="btn btn-outline-danger btn-sm nav-action-btn" type="submit">
+          <i class="bi bi-box-arrow-right me-1"></i>
+          Kijelentkezés
+        </button>
+      </form>
+    </div>
+  </div>
+</nav>
+
+<div class="container page-wrap">
+  <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+    <div>
+      <h1 class="page-title h2 m-0">Felhasználók kezelése</h1>
+      <div class="page-subtitle">Adminisztráció, hozzáféréskezelés és jelszó-visszaállítás egy egységes felületen.</div>
+    </div>
+    <a class="btn btn-outline-secondary nav-action-btn" href="/dashboard">Vissza</a>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-5">
+      <div class="card panel-soft h-100">
+        <div class="card-body">
+          <h5 class="card-title mb-2">
+            <i class="bi bi-person-plus"></i>
+            Új felhasználó létrehozása
+          </h5>
+          <p class="create-panel-note">Az új felhasználó webes hozzáférést és Fabric identity-t is kap.</p>
+
+          <form id="createUserForm">
+            <div class="mb-3">
+              <label class="form-label">Felhasználói azonosító</label>
+              <input class="form-control mono" name="userId" placeholder="pl. user1" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Jelszó</label>
+              <input type="password" class="form-control" name="password" placeholder="Minimum 4 karakter" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Szerepkör</label>
+              <select id="role" class="form-select">
+                <option value="user">Felhasználó</option>
+                <option value="admin">Adminisztrátor</option>
+              </select>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label">Affiliation</label>
+              <input class="form-control mono" id="affiliation" value="org1.department1">
+            </div>
+
+            <button class="btn btn-primary w-100 py-2" type="submit">Felhasználó létrehozása</button>
+          </form>
+
+          <div id="createResult" class="mt-3"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-7">
+      <div class="card panel-soft h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center flex-wrap top-tools mb-3">
+            <div>
+              <h5 class="card-title m-0">
+                <i class="bi bi-people"></i>
+                Regisztrált felhasználók
+              </h5>
+              <div class="section-label mt-1">Keresés, tiltás, aktiválás és jelszó-visszaállítás</div>
+            </div>
+
+            <div class="d-flex gap-2 flex-wrap">
+              <input id="userSearch" class="form-control form-control-sm users-search" placeholder="Keresés név, szerepkör, státusz szerint">
+              <button class="btn btn-outline-secondary btn-sm" type="button" onclick="loadUsers()">↻</button>
+            </div>
+          </div>
+
+          <div id="usersAlert"></div>
+
+          <div class="table-responsive">
+            <table class="table align-middle">
+              <thead>
+                <tr>
+                  <th>Azonosító</th>
+                  <th>Szerepkör</th>
+                  <th>Affiliation</th>
+                  <th>Státusz</th>
+                  <th>Fabric</th>
+                  <th class="text-end">Művelet</th>
+                </tr>
+              </thead>
+              <tbody id="usersTable">
+                <tr>
+                  <td colspan="6" class="empty-state">Betöltés...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="resetPasswordModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header px-4 py-3">
+        <h5 class="modal-title">Jelszó visszaállítása</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Bezárás"></button>
+      </div>
+      <div class="modal-body px-4 py-3">
+        <div class="mb-2 text-muted small">Felhasználó</div>
+        <div id="rpmUserId" class="mono fw-semibold mb-3">—</div>
+
+        <label class="form-label">Új jelszó</label>
+        <input id="rpmPassword" type="password" class="form-control" placeholder="Add meg az új jelszót">
+
+        <div id="rpmAlert" class="mt-3"></div>
+      </div>
+      <div class="modal-footer px-4 py-3">
+        <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Mégse</button>
+        <button class="btn btn-primary" type="button" onclick="submitResetPassword()">Mentés</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  let allUsers = [];
+  let resetModal = null;
+  let resetTargetUserId = null;
+
+  function badgeForStatus(status) {
+    const s = String(status || "").toUpperCase();
+    if (s === "ACTIVE") return '<span class="soft-badge badge-active">Aktív</span>';
+    if (s === "DISABLED") return '<span class="soft-badge badge-disabled">Letiltva</span>';
+    return '<span class="soft-badge badge-neutral">' + (s || "—") + '</span>';
+  }
+
+  function badgeForFabric(status) {
+    const s = String(status || "").toUpperCase();
+    if (s === "OK") return '<span class="soft-badge badge-fabric-ok">Rendben</span>';
+    if (s === "MISSING_IDENTITY") return '<span class="soft-badge badge-fabric-missing">Hiányzik</span>';
+    return '<span class="soft-badge badge-neutral">' + (s || "—") + '</span>';
+  }
+
+  function roleLabel(role) {
+    const r = String(role || "").toLowerCase();
+    if (r === "admin") return "Adminisztrátor";
+    if (r === "user") return "Felhasználó";
+    return role || "—";
+  }
+
+  function setUsersAlert(html) {
+    const el = document.getElementById("usersAlert");
+    if (el) el.innerHTML = html || "";
+  }
+
+  function applyUserFilter() {
+    const q = (document.getElementById("userSearch").value || "").trim().toLowerCase();
+    const table = document.getElementById("usersTable");
+
+    if (!Array.isArray(allUsers) || allUsers.length === 0) {
+      table.innerHTML = '<tr><td colspan="6" class="empty-state">Nincs még felhasználó.</td></tr>';
+      return;
+    }
+
+    const filtered = allUsers.filter(function (u) {
+      const id = String(u.id || "").toLowerCase();
+      const role = String(u.role || "").toLowerCase();
+      const status = String(u.status || "").toLowerCase();
+      const fabric = String(u.fabricIdentity || "").toLowerCase();
+      return !q || id.includes(q) || role.includes(q) || status.includes(q) || fabric.includes(q);
+    });
+
+    if (filtered.length === 0) {
+      table.innerHTML = '<tr><td colspan="6" class="empty-state">Nincs találat.</td></tr>';
+      return;
+    }
+
+    table.innerHTML = "";
+
+    filtered.forEach(function (u) {
+      const isDisabled = String(u.status || "").toUpperCase() === "DISABLED";
+      const safeId = JSON.stringify(u.id || "");
+
+      const actionBtn = isDisabled
+        ? '<button class="btn btn-sm btn-outline-success" type="button" onclick=\'enableUser(' + safeId + ')\'>Aktiválás</button>'
+        : '<button class="btn btn-sm btn-outline-warning" type="button" onclick=\'disableUser(' + safeId + ')\'>Letiltás</button>';
+
+      const tr = document.createElement("tr");
+      tr.innerHTML =
+        '<td class="mono truncate" title="' + (u.id || "") + '">' + (u.id || "—") + '</td>' +
+        '<td>' + roleLabel(u.role) + '</td>' +
+        '<td class="mono">' + (u.affiliation || "—") + '</td>' +
+        '<td>' + badgeForStatus(u.status) + '</td>' +
+        '<td>' + badgeForFabric(u.fabricIdentity) + '</td>' +
+        '<td class="text-end">' +
+          '<div class="btn-group">' +
+            actionBtn +
+            '<button class="btn btn-sm btn-outline-primary" type="button" onclick=\'openResetPasswordModal(' + safeId + ')\'>Jelszócsere</button>' +
+          '</div>' +
+        '</td>';
+
+      table.appendChild(tr);
+    });
+  }
+
+  async function loadUsers() {
+    const table = document.getElementById("usersTable");
+
+    try {
+      setUsersAlert("");
+      const r = await fetch("/api/admin/users");
+      const txt = await r.text();
+
+      let data;
+      try {
+        data = JSON.parse(txt);
+      } catch (e) {
+        table.innerHTML = '<tr><td colspan="6" class="text-danger text-center py-4">Érvénytelen válasz érkezett a szervertől.</td></tr>';
+        console.log("loadUsers raw response:", txt);
+        return;
+      }
+
+      if (!Array.isArray(data.users)) {
+        const msg = data.error || data.detail || "Nem érkezett felhasználólista";
+        table.innerHTML = '<tr><td colspan="6" class="text-danger text-center py-4">' + msg + '</td></tr>';
+        return;
+      }
+
+      allUsers = data.users;
+      applyUserFilter();
+    } catch (e) {
+      table.innerHTML = '<tr><td colspan="6" class="text-danger text-center py-4">Szerver hiba</td></tr>';
+      console.error("loadUsers error:", e);
+    }
+  }
+
+  async function disableUser(userId) {
+    const ok = confirm("Biztosan letiltod ezt a felhasználót?\n\n" + userId);
+    if (!ok) return;
+
+    try {
+      const r = await fetch("/api/admin/users/" + encodeURIComponent(userId) + "/disable", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+      });
+
+      const txt = await r.text();
+      let data;
+      try { data = JSON.parse(txt); } catch (e) { data = { raw: txt }; }
+
+      if (!r.ok) {
+        setUsersAlert('<div class="alert alert-danger">' + (data.error || data.detail || data.raw || "Hiba a letiltáskor") + '</div>');
+        return;
+      }
+
+      setUsersAlert('<div class="alert alert-success">A felhasználó letiltása sikeres: <span class="mono">' + userId + '</span></div>');
+      loadUsers();
+    } catch (e) {
+      setUsersAlert('<div class="alert alert-danger">Szerver hiba a letiltáskor: ' + String(e) + '</div>');
+    }
+  }
+
+  async function enableUser(userId) {
+    try {
+      const r = await fetch("/api/admin/users/" + encodeURIComponent(userId) + "/enable", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+      });
+
+      const txt = await r.text();
+      let data;
+      try { data = JSON.parse(txt); } catch (e) { data = { raw: txt }; }
+
+      if (!r.ok) {
+        setUsersAlert('<div class="alert alert-danger">' + (data.error || data.detail || data.raw || "Hiba az aktiváláskor") + '</div>');
+        return;
+      }
+
+      setUsersAlert('<div class="alert alert-success">A felhasználó újra aktiválva: <span class="mono">' + userId + '</span></div>');
+      loadUsers();
+    } catch (e) {
+      setUsersAlert('<div class="alert alert-danger">Szerver hiba az aktiváláskor: ' + String(e) + '</div>');
+    }
+  }
+
+  function openResetPasswordModal(userId) {
+    resetTargetUserId = userId;
+    document.getElementById("rpmUserId").textContent = userId;
+    document.getElementById("rpmPassword").value = "";
+    document.getElementById("rpmAlert").innerHTML = "";
+
+    if (!resetModal) {
+      resetModal = new bootstrap.Modal(document.getElementById("resetPasswordModal"));
+    }
+
+    resetModal.show();
+  }
+
+  async function submitResetPassword() {
+    const password = (document.getElementById("rpmPassword").value || "").trim();
+    const alertBox = document.getElementById("rpmAlert");
+
+    if (!resetTargetUserId || !password) {
+      alertBox.innerHTML = '<div class="alert alert-danger mb-0">Új jelszó megadása kötelező.</div>';
+      return;
+    }
+
+    try {
+      const r = await fetch("/api/admin/users/" + encodeURIComponent(resetTargetUserId) + "/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: password })
+      });
+
+      const txt = await r.text();
+      let data;
+      try { data = JSON.parse(txt); } catch (e) { data = { raw: txt }; }
+
+      if (!r.ok) {
+        alertBox.innerHTML = '<div class="alert alert-danger mb-0">' + (data.error || data.detail || data.raw || "Hiba a jelszó visszaállításakor") + '</div>';
+        return;
+      }
+
+      alertBox.innerHTML = '<div class="alert alert-success mb-0">A jelszó sikeresen frissítve lett.</div>';
+      setUsersAlert('<div class="alert alert-success">A jelszó frissítve: <span class="mono">' + resetTargetUserId + '</span></div>');
+      loadUsers();
+
+      setTimeout(function () {
+        if (resetModal) resetModal.hide();
+      }, 700);
+    } catch (e) {
+      alertBox.innerHTML = '<div class="alert alert-danger mb-0">Szerver hiba: ' + String(e) + '</div>';
+    }
+  }
+
+  document.getElementById("createUserForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const form = e.currentTarget;
+    const userId = (form.elements["userId"] ? form.elements["userId"].value : "").trim();
+    const password = (form.elements["password"] ? form.elements["password"].value : "").trim();
+    const role = document.getElementById("role").value;
+    const affiliation = document.getElementById("affiliation").value;
+    const result = document.getElementById("createResult");
+
+    result.innerHTML = "";
+
+    if (!userId || !password) {
+      result.innerHTML = '<div class="alert alert-danger">Felhasználói azonosító és jelszó megadása kötelező.</div>';
+      return;
+    }
+
+    try {
+      const r = await fetch("/api/admin/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: userId,
+          password: password,
+          role: role,
+          affiliation: affiliation
+        })
+      });
+
+      const txt = await r.text();
+      let data;
+      try { data = JSON.parse(txt); } catch (e) { data = { raw: txt }; }
+
+      if (!r.ok) {
+        result.innerHTML = '<div class="alert alert-danger">' + (data.error || data.detail || data.raw || "Hiba") + '</div>';
+        return;
+      }
+
+      const createdId = (data.user && data.user.id) ? data.user.id : userId;
+      const createdRole = (data.user && data.user.role) ? data.user.role : roleLabel(role);
+
+      result.innerHTML =
+        '<div class="alert alert-success">✅ Felhasználó létrehozva: <span class="mono">' +
+        createdId + '</span> (' + createdRole + ')</div>';
+
+      form.reset();
+      document.getElementById("role").value = "user";
+      document.getElementById("affiliation").value = "org1.department1";
+      loadUsers();
+    } catch (e) {
+      result.innerHTML = '<div class="alert alert-danger">Szerver hiba: ' + String(e) + '</div>';
+    }
+  });
+
+  document.getElementById("userSearch").addEventListener("input", applyUserFilter);
+
+  loadUsers();
+</script>
+</body>
+</html>
