@@ -95,7 +95,6 @@ Győződj meg róla, hogy az alábbi fájlok elérhetők:
 * `connection-org1.json`
 * `tls/ca.crt`
 
----
 
 ### 3. Környezeti változók beállítása
 
@@ -200,9 +199,14 @@ Admin jogosultsággal a következő funkciók érhetők el:
 ├── gateway-api-node/
 │   ├── app.js
 |   |── fabric/
+|   |    ├── tls/ca.crt
+|   |    |── users/
+│   |    └── connection-org1.json
 │   ├── package.json
 │   └── data/users.sqlite
 └── README.md
 ```
+
+A projekt nem tartalmazza a hálózatspecifikus konfigurációs fájlokat, mint például a ca.crt és a connection-org1.json. Ezeket a fájlokat a saját Hyperledger Fabric hálózatból kell előállítani vagy kinyerni, és a megfelelő helyre elhelyezni a futtatáshoz.
 
 
